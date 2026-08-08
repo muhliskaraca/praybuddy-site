@@ -1,8 +1,13 @@
-# Pray Buddy — Apache-Variante (.htaccess)
+# Pray Buddy — .htaccess für ALL-INKL.COM
 #
-# Nur verwenden, wenn hinter dem nginx ein Apache läuft (bei Plesk üblich).
-# Dann diese Datei als ".htaccess" ins Web-Root von praybuddy.likafilm.com legen.
-# Läuft ausschließlich nginx, greift .htaccess NICHT — dann deploy/nginx-praybuddy.conf nutzen.
+# DIES IST DER RICHTIGE WEG FÜR DAS AKTUELLE HOSTING.
+#
+# Die Seite liegt bei ALL-INKL (Neue Medien Münnich GmbH, 85.13.153.47).
+# Dort läuft nginx nur als Proxy, dahinter Apache mit mod_rewrite — .htaccess
+# greift also. Root-Zugriff für eine nginx-Konfiguration gibt es nicht.
+#
+# Diese Datei als ".htaccess" (mit führendem Punkt, ohne Endung) ins Web-Root
+# der Subdomain praybuddy.likafilm.com legen.
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
