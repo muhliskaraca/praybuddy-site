@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
-# Lädt die Seite per rsync über SSH aufs Hosting.
+# Lädt die Seite per lftp aufs Hosting (ALL-INKL.COM).
 #
-# Standardmäßig ein Trockenlauf — es wird nur angezeigt, was passieren würde.
-# Erst mit --live wird tatsächlich übertragen.
+# WARUM NICHT rsync/SSH: Der Tarif hat keinen SSH-Zugang. Der Weg, der
+# tatsächlich funktioniert, ist FTP über den subdomain-eigenen, chrooted
+# FTP-Nutzer (f0184137 für praybuddy). Zugangsdaten liegen ausserhalb des
+# Repos in ~/praybuddy-website/tools/.env-deploy und gehören da auch hin.
 #
-# Hosting ist ALL-INKL.COM. Den echten Pfad im KAS nachsehen
-# (Domain -> praybuddy.likafilm.com -> Bearbeiten), er sieht typisch so aus:
-# /www/htdocs/<kundennummer>/praybuddy
-#
-#   export DEPLOY_USER=dein_ssh_user
-#   export DEPLOY_HOST=praybuddy.likafilm.com     # oder 85.13.153.47
-#   export DEPLOY_PATH=/www/htdocs/KUNDENNUMMER/praybuddy
-#
-#   ./deploy/upload.sh          # Trockenlauf
+#   ./deploy/upload.sh          # Trockenlauf, listet nur die Dateien
 #   ./deploy/upload.sh --live   # überträgt wirklich
 #
-# Kein SSH im Tarif? Dann dieselben Dateien per FTP oder KAS-Dateimanager
-# hochladen — die Liste steht unten in FILES.
+# Bewusst "put" statt "mirror --delete": die Übertragung ist rein additiv
+# bzw. ersetzend. Ein Mirror aus diesem Ordner würde serverseitige Dateien
+# löschen, die es hier nicht gibt (siehe reference_allinkl_ftp_chroot_pitfall).
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
+
+ENV_FILE="${ENV_FILE:-$HOME/praybuddy-website/tools/.env-deploy}"
 
 FILES=(
     index.html
@@ -29,34 +26,43 @@ FILES=(
     icon.png
     og-image.png
     badge-app-store.svg
+    404.html
+    404.php
+    google3f2d86b09d73d64e.html
+    .htaccess
 )
 
-: "${DEPLOY_USER:?Bitte DEPLOY_USER setzen}"
-: "${DEPLOY_HOST:?Bitte DEPLOY_HOST setzen}"
-: "${DEPLOY_PATH:?Bitte DEPLOY_PATH setzen (Web-Root auf dem Server)}"
-
-DRY="--dry-run"
-MODE="TROCKENLAUF — es wird nichts übertragen"
-if [[ "${1:-}" == "--live" ]]; then
-    DRY=""
-    MODE="ECHTE ÜBERTRAGUNG"
+if [[ "${1:-}" != "--live" ]]; then
+    echo "TROCKENLAUF, es wird nichts übertragen."
+    echo "Dateien: ${FILES[*]}"
+    echo "Für die echte Übertragung: ./deploy/upload.sh --live"
+    exit 0
 fi
 
-echo "$MODE"
-echo "Ziel: $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
-echo "Dateien: ${FILES[*]}"
-echo
+[[ -f "$ENV_FILE" ]] || { echo "Fehlt: $ENV_FILE"; exit 1; }
+command -v lftp >/dev/null || { echo "lftp fehlt. brew install lftp"; exit 1; }
+# shellcheck source=/dev/null
+source "$ENV_FILE"
 
-# --relative erhält die Unterverzeichnisstruktur (de/index.html)
-rsync -avz $DRY --relative --checksum \
-    "${FILES[@]}" \
-    "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+for f in "${FILES[@]}"; do
+    [[ -f "$f" ]] || { echo "Fehlt lokal: $f"; exit 1; }
+done
+
+echo "ECHTE ÜBERTRAGUNG nach ftp://$FTP_USER@$FTP_HOST/"
+
+{
+    echo "set ssl:verify-certificate no"
+    echo "set ftp:ssl-allow yes"
+    echo "set ftp:ssl-protect-data yes"
+    echo "set net:max-retries 3"
+    echo "cd /"
+    echo "mkdir -p de"
+    for f in "${FILES[@]}"; do
+        echo "put $f -o $f"
+    done
+    echo "quit"
+} | lftp -u "$FTP_USER","$FTP_PASS" "$FTP_HOST" 2>&1 |
+    sed -E 's#(ftp://[^:/]+):[^@]*@#\1:***@#g'
 
 echo
-if [[ -n "$DRY" ]]; then
-    echo "Das war ein Trockenlauf. Für die echte Übertragung: ./deploy/upload.sh --live"
-else
-    echo "Übertragen. Jetzt prüfen: ./deploy/verify.sh"
-    echo "Achtung: Die Weiterleitungen sind damit noch NICHT eingerichtet —"
-    echo "dafür htaccess-praybuddy als .htaccess ins Web-Root legen."
-fi
+echo "Übertragen. Jetzt prüfen: ./deploy/verify.sh"

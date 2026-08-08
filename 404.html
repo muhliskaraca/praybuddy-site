@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow">
+<title>Page not found · Pray Buddy</title>
+<link rel="icon" href="/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Inter:wght@300;400&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --bg-card: #111111;
+    --gold: #c9a96e;
+    --cream: #f0ece4;
+    --border: rgba(201, 169, 110, 0.15);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+    background: radial-gradient(circle at 50% 0%, rgba(201,169,110,0.07), transparent 55%), var(--bg);
+    color: var(--cream);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 29rem; text-align: center; }
+  .code {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: clamp(3.5rem, 12vw, 5.5rem);
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: var(--gold);
+    line-height: 1;
+    margin: 0 0 1.5rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(1.4rem, 4.5vw, 1.9rem);
+    font-weight: 400;
+    margin: 0 0 0.9rem;
+  }
+  p { color: rgba(240,236,228,0.55); line-height: 1.65; margin: 0 0 2.25rem; }
+  nav { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; }
+  a {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 0.88rem;
+    text-decoration: none;
+    color: var(--gold);
+    padding: 0.7rem 1.2rem;
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    background: rgba(17,17,17,0.7);
+    transition: border-color 0.2s ease;
+  }
+  a:hover, a:focus-visible { border-color: var(--gold); }
+  footer { margin-top: 2.5rem; font-size: 0.8rem; }
+  footer a { border: 0; padding: 0; background: none; color: rgba(240,236,228,0.28); font-family: 'Inter', sans-serif; }
+  footer a:hover { color: rgba(240,236,228,0.55); }
+</style>
+</head>
+<body>
+<main>
+  <p class="code">404</p>
+  <h1>This page does not exist.</h1>
+  <p>Most likely an old link or a typo in the address.</p>
+  <nav>
+    <a href="/">Back to Pray Buddy</a>
+  </nav>
+  <footer>
+    <a href="mailto:info@likafilm.com">info@likafilm.com</a>
+  </footer>
+</main>
+</body>
+</html>
