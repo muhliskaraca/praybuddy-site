@@ -21,9 +21,23 @@ beseitigt.
 
 | | |
 |---|---|
-| `praybuddy.likafilm.com` löst auf | `85.13.153.47` (nginx, gleicher Server wie `likafilm.com`) |
+| `praybuddy.likafilm.com` löst auf | `85.13.153.47` (gleicher Server wie `likafilm.com`) |
+| Betreiber laut RDAP | **Neue Medien Münnich GmbH = ALL-INKL.COM** |
+| Art | Shared Hosting, **kein Root-Zugriff** |
+| Webserver | nginx als Proxy, **Apache dahinter**, `mod_rewrite` aktiv |
+| Steuerpanel | KAS — <https://kas.all-inkl.com> |
+| Web-Root | typisch `/www/htdocs/<kundennummer>/<verzeichnis>/` |
 | GitHub-Pages-IPs wären | `185.199.108–111.153` |
 | `CNAME` im Repo-Root | Altlast aus einem nie aktivierten Pages-Setup, ohne Wirkung |
+
+**Folge daraus:** Weiterleitungen laufen über **`.htaccess`**, nicht über eine
+nginx-Konfiguration. `deploy/nginx-praybuddy.conf` ist auf diesem Hosting
+nicht einsetzbar und nur für einen späteren Serverumzug aufgehoben.
+
+**Warum das von Hand passieren muss:** Aus einer Claude-Cloud-Session sind
+SSH (22), FTP (21) und FTPS (990) zum Server nicht erreichbar — es geht nur
+HTTPS über einen Proxy. Das Deployment braucht daher zwingend eine Session
+auf deinem eigenen Rechner.
 
 Das Repo enthielt bis zum 08.08.2026 eine völlig andere, alte Privacy-Seite.
 Es ist jetzt mit dem Live-Stand synchronisiert — **Änderungen müssen aber von
@@ -58,15 +72,17 @@ icon.png              → 6.793.364 Bytes (erwartet: unter 200.000)
 
 ### 1. Zugangsdaten setzen
 
-`DEPLOY_PATH` ist das echte Web-Root auf dem Server — bei Plesk meist
-`/var/www/vhosts/likafilm.com/praybuddy` oder ähnlich. Im Plesk-Dateimanager
-nachsehen.
+`DEPLOY_PATH` ist das echte Web-Root der Subdomain. Bei ALL-INKL sieht das
+typisch so aus: `/www/htdocs/<kundennummer>/praybuddy`. Den exakten Pfad im
+KAS unter *Domain → praybuddy.likafilm.com → Bearbeiten* nachsehen.
 
 ```bash
 export DEPLOY_USER=DEIN_SSH_USER
 export DEPLOY_HOST=praybuddy.likafilm.com
-export DEPLOY_PATH=/var/www/vhosts/likafilm.com/praybuddy
+export DEPLOY_PATH=/www/htdocs/KUNDENNUMMER/praybuddy
 ```
+
+Kein SSH im Tarif? Dann Schritt 2 per FTP oder KAS-Dateimanager erledigen.
 
 ### 2. Ist-Zustand festhalten, dann hochladen
 
@@ -96,13 +112,15 @@ badge-app-store.svg
 
 Der Upload allein behebt die Duplikat-URLs **nicht**.
 
-- **Nur nginx?** → `deploy/nginx-praybuddy.conf` in die Server-Konfiguration
-  übernehmen (Zertifikatspfade und Web-Root anpassen), dann
-  `nginx -t && systemctl reload nginx`
-- **Apache hinter nginx (Plesk-Standard)?** → `deploy/htaccess-praybuddy` als
-  `.htaccess` ins Web-Root legen
-- **Kein Shell-Zugriff?** → Plesk: *Websites & Domains → Apache & nginx
-  Settings → Zusätzliche nginx-Direktiven*
+**Variante A — `.htaccess` (empfohlen):** `deploy/htaccess-praybuddy` als
+`.htaccess` (führender Punkt, keine Endung) ins Web-Root der Subdomain legen.
+Deckt alle drei Fälle ab: `http://` → `https://`, `www.` → ohne `www`,
+`/index.html` → `/`.
+
+**Variante B — KAS-Oberfläche:** HTTPS-Erzwingung unter *Domain → Bearbeiten →
+SSL-Schutz*, die `www.`-Weiterleitung unter *Domain → Bearbeiten →
+Weiterleitung*. Für `/index.html` → `/` gibt es im KAS nichts — die Regel
+braucht in jedem Fall `.htaccess`.
 
 ### 4. Kontrolle
 
@@ -144,11 +162,13 @@ Sichtbarkeit, liegt aber in einem anderen Projekt.
 ## Prompt zum Einfügen in die Desktop-Session
 
 ```
-Lies CHECKPOINT.md in diesem Repo. Es beschreibt eine Website, die auf
-klassischem Webhosting läuft und manuell deployt werden muss. Der Code ist
+Lies CHECKPOINT.md in diesem Repo. Die Website praybuddy.likafilm.com liegt
+bei ALL-INKL (Shared Hosting, kein Root, Apache mit .htaccess). Der Code ist
 fertig und in main gemerged, aber nichts davon ist live.
 
-Führe ./deploy/verify.sh aus, um den Ist-Zustand zu sehen. Hilf mir dann
-beim Deployment nach den Schritten in CHECKPOINT.md. Ich habe SSH-Zugang
-zum Server; frag mich nach den Zugangsdaten, wenn du sie brauchst.
+Führe zuerst ./deploy/verify.sh aus — es zeigt sieben offene Punkte gegen
+den Live-Server. Hilf mir dann, sie nach den Schritten in CHECKPOINT.md
+abzuarbeiten: Dateien hochladen, .htaccess einrichten, erneut verifizieren.
+Ich habe die ALL-INKL-Zugangsdaten hier; frag mich danach, wenn du sie
+brauchst.
 ```

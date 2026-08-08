@@ -4,15 +4,19 @@
 # Standardmäßig ein Trockenlauf — es wird nur angezeigt, was passieren würde.
 # Erst mit --live wird tatsächlich übertragen.
 #
+# Hosting ist ALL-INKL.COM. Den echten Pfad im KAS nachsehen
+# (Domain -> praybuddy.likafilm.com -> Bearbeiten), er sieht typisch so aus:
+# /www/htdocs/<kundennummer>/praybuddy
+#
 #   export DEPLOY_USER=dein_ssh_user
 #   export DEPLOY_HOST=praybuddy.likafilm.com     # oder 85.13.153.47
-#   export DEPLOY_PATH=/var/www/vhosts/likafilm.com/praybuddy   # echtes Web-Root eintragen
+#   export DEPLOY_PATH=/www/htdocs/KUNDENNUMMER/praybuddy
 #
 #   ./deploy/upload.sh          # Trockenlauf
 #   ./deploy/upload.sh --live   # überträgt wirklich
 #
-# Kein SSH auf dem Hosting? Dann dieselben Dateien per Plesk-Dateimanager
-# oder FTP hochladen — die Liste steht unten in FILES.
+# Kein SSH im Tarif? Dann dieselben Dateien per FTP oder KAS-Dateimanager
+# hochladen — die Liste steht unten in FILES.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -54,5 +58,5 @@ if [[ -n "$DRY" ]]; then
 else
     echo "Übertragen. Jetzt prüfen: ./deploy/verify.sh"
     echo "Achtung: Die Weiterleitungen sind damit noch NICHT eingerichtet —"
-    echo "dafür nginx-praybuddy.conf bzw. htaccess-praybuddy einspielen."
+    echo "dafür htaccess-praybuddy als .htaccess ins Web-Root legen."
 fi
