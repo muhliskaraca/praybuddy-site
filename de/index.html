@@ -28,11 +28,21 @@
     <meta name="twitter:description" content="Ein privater Gebetsbegleiter fürs iPhone. Ohne Konto, ohne Tracking, ohne Werbung.">
     <meta name="twitter:image" content="https://praybuddy.likafilm.com/og-image.png">
 
+    <meta name="theme-color" content="#080808">
+
     <link rel="icon" type="image/png" href="/icon.png">
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
 <style>
+        /* Schriften liegen lokal auf diesem Server. Kein Aufruf zu Google Fonts,
+           damit beim Seitenaufruf keine Besucher-IP an Dritte geht. Lizenz und
+           Herkunft der Dateien: /fonts/LICENSE.txt */
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/playfair-display-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/playfair-display-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300 500; font-display: swap; src: url('/fonts/inter-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300 500; font-display: swap; src: url('/fonts/inter-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400 500; font-display: swap; src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400 500; font-display: swap; src: url('/fonts/space-grotesk-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
@@ -58,7 +68,7 @@
             overflow-x: hidden;
         }
 
-        /* — Grain Overlay — */
+        /* Grain Overlay */
         body::before {
             content: '';
             position: fixed;
@@ -69,7 +79,7 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* — Navigation — */
+        /* Navigation */
         nav {
             position: fixed;
             top: 20px;
@@ -115,7 +125,7 @@
 
         .nav-links a.lang { color: var(--gold); }
 
-        /* — Hero — */
+        /* Hero */
         .hero {
             min-height: 70vh;
             display: flex;
@@ -175,7 +185,7 @@
             max-width: 520px;
         }
 
-        /* — Sections — */
+        /* Sections */
         .section {
             max-width: 780px;
             margin: 0 auto;
@@ -238,7 +248,7 @@
 
         .section a:hover { border-color: var(--gold); }
 
-        /* — Features — */
+        /* Features */
         .section.wide { max-width: 1000px; }
         .center { text-align: center; }
         .feature-grid {
@@ -265,7 +275,7 @@
         .feature-card p { color: var(--cream-60); font-size: 0.9rem; margin: 0; line-height: 1.65; }
         .download-cta { margin-top: 8px; }
 
-        /* — Footer — */
+        /* Footer */
         footer {
             text-align: center;
             padding: 48px 24px;
@@ -286,7 +296,7 @@
 
         footer a:hover { color: var(--gold); }
 
-        /* — Animations — */
+        /* Animations */
         .rv {
             opacity: 0;
             transform: translateY(24px);
@@ -299,7 +309,7 @@
             transform: translateY(0);
         }
 
-        /* — Mobile — */
+        /* Mobile */
         @media (max-width: 640px) {
             nav { padding: 10px 20px; gap: 16px; }
             .nav-links a { font-size: 0.7rem; }
@@ -351,7 +361,7 @@
 <section class="hero">
     <img src="/icon.png" alt="Pray-Buddy-Symbol" class="hero-icon rv" width="80" height="80">
     <h1 class="rv">Pray <span>Buddy</span></h1>
-    <p class="rv">Dein Begleiter für die fünf täglichen Gebete – genaue Zeiten, Qibla, Tracking und sanfte Erinnerungen. Privat und vollständig auf deinem Gerät.</p>
+    <p class="rv">Dein Begleiter für die fünf täglichen Gebete: genaue Zeiten, Qibla, Tracking und sanfte Erinnerungen. Privat und vollständig auf deinem Gerät.</p>
     <a href="https://apps.apple.com/de/app/pray-buddy/id6762096944" class="app-store-btn rv" target="_blank" rel="noopener" aria-label="Pray Buddy im App Store">
         <img src="/badge-app-store.svg" alt="Laden im App Store" width="180" height="60">
     </a>
@@ -364,7 +374,7 @@
     <div class="feature-grid">
         <div class="feature-card">
             <h3>Genaue Gebetszeiten</h3>
-            <p>Auf deinem Gerät berechnet mit der Open-Source-Engine adhan-swift – oder wahlweise über die Zeiten der Diyanet. Funktioniert vollständig offline.</p>
+            <p>Auf deinem Gerät berechnet mit der Open-Source-Engine adhan-swift, wahlweise auch über die Zeiten der Diyanet. Funktioniert vollständig offline.</p>
         </div>
         <div class="feature-card">
             <h3>Qibla-Kompass</h3>
@@ -372,11 +382,11 @@
         </div>
         <div class="feature-card">
             <h3>Gebets-Tracking</h3>
-            <p>Markiere jedes Gebet als verrichtet und führe eine private Übersicht. Alle Daten bleiben auf deinem Gerät – kein Konto, keine Cloud.</p>
+            <p>Markiere jedes Gebet als verrichtet und führe eine private Übersicht. Alle Daten bleiben auf deinem Gerät: kein Konto, keine Cloud.</p>
         </div>
         <div class="feature-card">
             <h3>Duas mit Übersetzung</h3>
-            <p>Bittgebete für den Alltag auf Arabisch, mit Umschrift und Übersetzung – zum Mitlesen und Lernen.</p>
+            <p>Bittgebete für den Alltag auf Arabisch, mit Umschrift und Übersetzung, zum Mitlesen und Lernen.</p>
         </div>
         <div class="feature-card">
             <h3>Widgets für den Home-Bildschirm</h3>
@@ -384,7 +394,7 @@
         </div>
         <div class="feature-card">
             <h3>Sanfte Erinnerungsstimmen</h3>
-            <p>Vorinstallierte Jungen-, Mädchen- und Erwachsenenstimmen erinnern dich und bestärken dich nach dem verrichteten Gebet – in der App enthalten, lokal abgespielt.</p>
+            <p>Vorinstallierte Jungen-, Mädchen- und Erwachsenenstimmen erinnern dich und bestärken dich nach dem verrichteten Gebet, in der App enthalten, lokal abgespielt.</p>
         </div>
     </div>
 </section>
@@ -394,7 +404,7 @@
     <div class="section-label">Zwei Modi</div>
     <h2>Gemacht für die ganze Familie.</h2>
     <h3>Kindermodus</h3>
-    <p>Ein altersgerechtes Erlebnis mit ermutigenden Stimmen und warmen Rückmeldungen – damit sich das Gebet einladend anfühlt und nicht nach Pflicht. Im Kindermodus werden keinerlei Daten erhoben.</p>
+    <p>Ein altersgerechtes Erlebnis mit ermutigenden Stimmen und warmen Rückmeldungen, damit sich das Gebet einladend anfühlt und nicht nach Pflicht. Im Kindermodus werden keinerlei Daten erhoben.</p>
     <h3>Erwachsenenmodus</h3>
     <p>Ein ruhigerer, erwachsener Ton mit entsprechenden Erinnerungsstimmen und dezenten Bestätigungen nach jedem Gebet. Gleicher Datenschutz, gleicher Ansatz ohne Server.</p>
 </section>
@@ -407,7 +417,7 @@
     <ul>
         <li>Kein Konto, keine Anmeldung</li>
         <li>Kein Tracking, keine Analyse, keine Werbung</li>
-        <li>Alles lokal gespeichert – App löschen entfernt sämtliche Daten</li>
+        <li>Alles lokal gespeichert: App löschen entfernt sämtliche Daten</li>
     </ul>
 </section>
 
@@ -437,8 +447,8 @@
     <p>Pray Buddy folgt dem Grundsatz der Datenminimierung. Die App erhebt und verarbeitet ausschließlich:</p>
     <ul>
         <li>Standortdaten (nur während der aktiven Nutzung) zur Berechnung von Gebetszeiten und Qibla-Richtung</li>
-        <li>Lokale App-Einstellungen (Berechnungsmethode, Sprache, Lautstärke) &ndash; ausschließlich auf deinem Gerät gespeichert</li>
-        <li>Daten zum Gebets-Tracking &ndash; ausschließlich lokal auf deinem Gerät gespeichert</li>
+        <li>Lokale App-Einstellungen (Berechnungsmethode, Sprache, Lautstärke), ausschließlich auf deinem Gerät gespeichert</li>
+        <li>Daten zum Gebets-Tracking, ausschließlich lokal auf deinem Gerät gespeichert</li>
     </ul>
 
     <h3>3. Keine Weitergabe an Dritte</h3>
@@ -469,7 +479,16 @@
     <h3>10. Kinder (Kindermodus)</h3>
     <p>Pray Buddy enthält einen Kindermodus mit altersgerechten Inhalten. Auch im Kindermodus werden keine personenbezogenen Daten erhoben oder übertragen.</p>
 
-    <h3>11. Änderungen</h3>
+    <h3>11. Diese Website</h3>
+    <p>Die Abschnitte oben betreffen die App. Für diese Website gilt zusätzlich:</p>
+    <ul>
+        <li>Gehostet wird sie bei der ALL-INKL.COM, Neue Medien Münnich GmbH, Hauptstraße 68, 02742 Friedersdorf, als Auftragsverarbeiter. Der Server legt beim Abruf die üblichen Protokolldaten an (IP-Adresse, Zeitpunkt, aufgerufene Adresse, übertragene Datenmenge, Browserkennung). Rechtsgrundlage ist das berechtigte Interesse am sicheren Betrieb nach Art. 6 Abs. 1 lit. f DSGVO.</li>
+        <li>Es kommen keine Cookies, keine Analyse und keine Tracker zum Einsatz.</li>
+        <li>Die Schriftarten liegen auf demselben Server und werden lokal ausgeliefert. Beim Aufruf der Seite wird also keine Verbindung zu Google Fonts oder einem anderen fremden Anbieter hergestellt.</li>
+        <li>Die Links zum App Store, zu GitHub und zu likafilm.com führen auf fremde Angebote, deren Datenverarbeitung erst mit dem Klick beginnt und deren eigenen Bestimmungen unterliegt.</li>
+    </ul>
+
+    <h3>12. Änderungen</h3>
     <p>Diese Datenschutzerklärung kann bei Bedarf aktualisiert werden. Die jeweils aktuelle Fassung ist stets unter dieser Adresse abrufbar.</p>
 </section>
 

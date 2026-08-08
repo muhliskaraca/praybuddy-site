@@ -69,9 +69,64 @@ else
 fi
 
 echo
+echo "Fehlende URLs (Fix vom 29.07.2026):"
+# Ohne die Rewrite-Regel auf /404.php antworten die likafilm-Subdomains auf
+# jede unbekannte URL mit HTTP 500. Eine .htaccess ohne diese Regel dreht den
+# Fix zurueck, ohne dass eine der Pruefungen oben es merkt.
+expect_status "$BASE/gibt-es-nicht-$$"     404 "unbekannte URL im Root"
+expect_status "$BASE/de/gibt-es-nicht-$$"  404 "unbekannte URL unter /de/"
+expect_status "$BASE/404.html"             200 "404.html vorhanden"
+
+echo
+echo "Datenschutz und Auslieferung:"
+# Die Seite darf keine fremde Ressource nachladen. Google Fonts hat bis zum
+# 08.08.2026 die IP jedes Besuchers an Google uebertragen.
+extern=0
+for p in "/" "/de/"; do
+    if curl -sS --max-time 20 "$BASE$p" 2>/dev/null |
+        grep -oE '(src|href)="https?://[^"]+"' |
+        grep -vE 'praybuddy\.likafilm\.com|apps\.apple\.com|github\.com|//likafilm\.com' |
+        grep -q .; then
+        red "$p laedt eine fremde Ressource nach"
+        extern=1
+    fi
+done
+[[ $extern -eq 0 ]] && green "keine fremden Ressourcen in / und /de/"
+
+expect_status "$BASE/fonts/inter-latin.woff2" 200 "Schriften liegen lokal"
+
+for p in "/" "/de/"; do
+    if curl -sS --max-time 20 "$BASE$p" 2>/dev/null | grep -q 'Oberföhringer Str. 246a'; then
+        green "$p nennt die ladungsfaehige Anschrift"
+    else
+        red "$p ohne Anschrift (§ 5 DDG)"
+    fi
+done
+
+# Die Verifizierungsdatei der Search Console liegt nur auf dem Server. Ein
+# mirror --delete aus dem Repo-Ordner wuerde sie abraeumen.
+expect_status "$BASE/google3f2d86b09d73d64e.html" 200 "Search-Console-Verifizierung"
+
+echo
+echo "Sicherheits-Header:"
+hdrs=$(curl -sSI --max-time 20 "$BASE/" 2>/dev/null | tr -d '\r' | tr 'A-Z' 'a-z')
+for h in strict-transport-security x-content-type-options referrer-policy content-security-policy; do
+    if grep -q "^$h:" <<<"$hdrs"; then green "$h gesetzt"; else red "$h fehlt"; fi
+done
+
+# Die hochgeladene .htaccess ist eine Kopie der Vorlage. Laufen sie
+# auseinander, deployt man etwas anderes als das, was dokumentiert ist.
+repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+if cmp -s "$repo_root/.htaccess" "$repo_root/deploy/htaccess-praybuddy"; then
+    green ".htaccess stimmt mit der Vorlage ueberein"
+else
+    red ".htaccess und deploy/htaccess-praybuddy laufen auseinander"
+fi
+
+echo
 if [[ $fails -eq 0 ]]; then
     echo "Alles erledigt. In der Search Console noch die Sitemap neu einreichen."
 else
-    echo "$fails Prüfung(en) offen — siehe deploy/README.md."
+    echo "$fails Prüfung(en) offen, siehe deploy/README.md."
 fi
 exit $(( fails > 0 ))

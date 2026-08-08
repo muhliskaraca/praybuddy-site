@@ -27,11 +27,21 @@
     <meta name="twitter:description" content="A private, on-device prayer companion for iPhone. No account, no tracking, no ads.">
     <meta name="twitter:image" content="https://praybuddy.likafilm.com/og-image.png">
 
-    <link rel="icon" type="image/png" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#080808">
+
+    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="apple-touch-icon" href="/icon.png">
     <style>
+        /* Schriften liegen lokal auf diesem Server. Kein Aufruf zu Google Fonts,
+           damit beim Seitenaufruf keine Besucher-IP an Dritte geht. Lizenz und
+           Herkunft der Dateien: /fonts/LICENSE.txt */
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/playfair-display-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Playfair Display'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/playfair-display-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300 500; font-display: swap; src: url('/fonts/inter-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Inter'; font-style: normal; font-weight: 300 500; font-display: swap; src: url('/fonts/inter-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+        @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400 500; font-display: swap; src: url('/fonts/space-grotesk-latin-ext.woff2') format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+        @font-face { font-family: 'Space Grotesk'; font-style: normal; font-weight: 400 500; font-display: swap; src: url('/fonts/space-grotesk-latin.woff2') format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
@@ -57,7 +67,7 @@
             overflow-x: hidden;
         }
 
-        /* — Grain Overlay — */
+        /* Grain Overlay */
         body::before {
             content: '';
             position: fixed;
@@ -68,7 +78,7 @@
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* — Navigation — */
+        /* Navigation */
         nav {
             position: fixed;
             top: 20px;
@@ -114,7 +124,7 @@
 
         .nav-links a.lang { color: var(--gold); }
 
-        /* — Hero — */
+        /* Hero */
         .hero {
             min-height: 70vh;
             display: flex;
@@ -174,7 +184,7 @@
             max-width: 520px;
         }
 
-        /* — Sections — */
+        /* Sections */
         .section {
             max-width: 780px;
             margin: 0 auto;
@@ -237,7 +247,7 @@
 
         .section a:hover { border-color: var(--gold); }
 
-        /* — Features — */
+        /* Features */
         .section.wide { max-width: 1000px; }
         .center { text-align: center; }
         .feature-grid {
@@ -264,7 +274,7 @@
         .feature-card p { color: var(--cream-60); font-size: 0.9rem; margin: 0; line-height: 1.65; }
         .download-cta { margin-top: 8px; }
 
-        /* — Footer — */
+        /* Footer */
         footer {
             text-align: center;
             padding: 48px 24px;
@@ -285,7 +295,7 @@
 
         footer a:hover { color: var(--gold); }
 
-        /* — Animations — */
+        /* Animations */
         .rv {
             opacity: 0;
             transform: translateY(24px);
@@ -298,7 +308,7 @@
             transform: translateY(0);
         }
 
-        /* — Mobile — */
+        /* Mobile */
         @media (max-width: 640px) {
             nav { padding: 10px 20px; gap: 16px; }
             .nav-links a { font-size: 0.7rem; }
@@ -323,7 +333,7 @@
         "@type": "Offer",
         "price": "0",
         "priceCurrency": "EUR",
-        "url": "https://apps.apple.com/de/app/pray-buddy/id6762096944",
+        "url": "https://apps.apple.com/app/id6762096944",
         "availability": "https://schema.org/InStock"
       },
       "publisher": {
@@ -350,8 +360,8 @@
 <section class="hero">
     <img src="icon.png" alt="Pray Buddy Icon" class="hero-icon rv" width="80" height="80">
     <h1 class="rv">Pray <span>Buddy</span></h1>
-    <p class="rv">Your companion for the five daily prayers – accurate times, Qibla, tracking and gentle reminders. Private and fully on-device.</p>
-    <a href="https://apps.apple.com/de/app/pray-buddy/id6762096944" class="app-store-btn rv" target="_blank" rel="noopener" aria-label="Pray Buddy on the App Store">
+    <p class="rv">Your companion for the five daily prayers: accurate times, Qibla, tracking and gentle reminders. Private and fully on-device.</p>
+    <a href="https://apps.apple.com/app/id6762096944" class="app-store-btn rv" target="_blank" rel="noopener" aria-label="Pray Buddy on the App Store">
         <img src="badge-app-store.svg" alt="Download on the App Store" width="180" height="60">
     </a>
 </section>
@@ -363,7 +373,7 @@
     <div class="feature-grid">
         <div class="feature-card">
             <h3>Accurate prayer times</h3>
-            <p>Calculated on your device with the open-source adhan-swift engine – or via Diyanet times if you prefer. Works fully offline.</p>
+            <p>Calculated on your device with the open-source adhan-swift engine, or via Diyanet times if you prefer. Works fully offline.</p>
         </div>
         <div class="feature-card">
             <h3>Qibla compass</h3>
@@ -371,7 +381,7 @@
         </div>
         <div class="feature-card">
             <h3>Prayer tracking</h3>
-            <p>Mark each prayer as done and keep a private record. All tracking stays on your device – no account, no cloud.</p>
+            <p>Mark each prayer as done and keep a private record. All tracking stays on your device: no account, no cloud.</p>
         </div>
         <div class="feature-card">
             <h3>Du'as with translation</h3>
@@ -383,7 +393,7 @@
         </div>
         <div class="feature-card">
             <h3>Gentle reminder voices</h3>
-            <p>Pre-installed boy, girl and adult voices remind you and cheer you on after a completed prayer – bundled with the app, played locally.</p>
+            <p>Pre-installed boy, girl and adult voices remind you and cheer you on after a completed prayer, bundled with the app, played locally.</p>
         </div>
     </div>
 </section>
@@ -406,7 +416,7 @@
     <ul>
         <li>No account, no sign-up</li>
         <li>No tracking, no analytics, no ads</li>
-        <li>Everything stored locally – delete the app to remove all data</li>
+        <li>Everything stored locally: delete the app to remove all data</li>
     </ul>
 </section>
 
@@ -415,7 +425,7 @@
     <div class="section-label">Get the app</div>
     <h2>Start praying with a buddy.</h2>
     <p>Free on the App Store, for iPhone.</p>
-    <a href="https://apps.apple.com/de/app/pray-buddy/id6762096944" class="app-store-btn download-cta" target="_blank" rel="noopener" aria-label="Pray Buddy on the App Store">
+    <a href="https://apps.apple.com/app/id6762096944" class="app-store-btn download-cta" target="_blank" rel="noopener" aria-label="Pray Buddy on the App Store">
         <img src="badge-app-store.svg" alt="Download on the App Store" width="180" height="60">
     </a>
 </section>
@@ -436,8 +446,8 @@
     <p>Pray Buddy is built with data minimization as a core principle. The app only collects and processes:</p>
     <ul>
         <li>Location data (only during active use) to calculate prayer times and Qibla direction</li>
-        <li>Local app settings (prayer method, language, volume) &ndash; stored only on your device</li>
-        <li>Prayer tracking data &ndash; stored only locally on your device</li>
+        <li>Local app settings (prayer method, language, volume), stored only on your device</li>
+        <li>Prayer tracking data, stored only locally on your device</li>
     </ul>
 
     <h3>3. No third-party sharing</h3>
@@ -468,7 +478,16 @@
     <h3>10. Children (Kids Mode)</h3>
     <p>Pray Buddy includes a Kids Mode with age-appropriate content. No personal data is collected or transmitted in Kids Mode either.</p>
 
-    <h3>11. Changes</h3>
+    <h3>11. This website</h3>
+    <p>The sections above cover the app. For this website, the following also applies:</p>
+    <ul>
+        <li>It is hosted by ALL-INKL.COM, Neue Medien Münnich GmbH, Hauptstrasse 68, 02742 Friedersdorf, Germany, acting as a processor. The server records the usual log data on each request (IP address, time, requested address, amount of data transferred, browser identification). The legal basis is the legitimate interest in secure operation under Art. 6(1)(f) GDPR.</li>
+        <li>No cookies, no analytics and no trackers are used.</li>
+        <li>The fonts are served from this same server. Loading the page therefore opens no connection to Google Fonts or any other third party.</li>
+        <li>The links to the App Store, to GitHub and to likafilm.com lead to third-party services whose data processing begins with the click and follows their own terms.</li>
+    </ul>
+
+    <h3>12. Changes</h3>
     <p>This privacy policy may be updated as needed. The current version is always available at this address.</p>
 </section>
 

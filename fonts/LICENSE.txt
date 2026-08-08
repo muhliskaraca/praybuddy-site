@@ -1,0 +1,21 @@
+Die Schriftdateien in diesem Verzeichnis stehen unter der SIL Open Font
+License, Version 1.1. Der volle Lizenztext steht unter:
+https://openfontlicense.org
+
+Sie werden unveraendert ausgeliefert, weder umbenannt noch als Subset
+beschnitten. Damit bleiben die Reserved Font Names unangetastet.
+
+  Inter
+  Copyright (c) 2016 The Inter Project Authors
+  https://github.com/rsms/inter
+
+  Playfair Display
+  Copyright (c) 2017 The Playfair Display Project Authors
+  https://github.com/clauseggers/Playfair-Display
+
+  Space Grotesk
+  Copyright (c) 2020 The Space Grotesk Project Authors
+  https://github.com/floriankarsten/space-grotesk
+
+Alle drei sind variable Fonts. Pro Familie und Subset liegt genau eine
+Datei, die den gesamten benoetigten Strichstaerkenbereich abdeckt.

@@ -32,6 +32,13 @@ FILES=(
     .htaccess
 )
 
+# Schriften liegen seit dem 08.08.2026 lokal, damit die Seite keine Besucher-IP
+# mehr an Google Fonts schickt. Glob statt fester Liste, damit ein Font-Update
+# nicht stillschweigend am Deploy vorbeilaeuft.
+shopt -s nullglob
+FILES+=(fonts/LICENSE.txt fonts/*.woff2)
+shopt -u nullglob
+
 if [[ "${1:-}" != "--live" ]]; then
     echo "TROCKENLAUF, es wird nichts übertragen."
     echo "Dateien: ${FILES[*]}"
@@ -57,6 +64,7 @@ echo "ECHTE ÜBERTRAGUNG nach ftp://$FTP_USER@$FTP_HOST/"
     echo "set net:max-retries 3"
     echo "cd /"
     echo "mkdir -p de"
+    echo "mkdir -p fonts"
     for f in "${FILES[@]}"; do
         echo "put $f -o $f"
     done

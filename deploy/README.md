@@ -7,22 +7,22 @@ also **ALL-INKL.COM**. Daraus folgt alles Weitere:
 
 | | |
 |---|---|
-| Serverzugriff | **kein Root** — Shared Hosting |
+| Serverzugriff | **kein Root**, Shared Hosting, **auch kein SSH** |
 | Webserver | nginx als Proxy, **Apache dahinter** |
 | Konfiguration | über **`.htaccess`**, `mod_rewrite` ist standardmäßig aktiv |
-| Steuerpanel | KAS — <https://kas.all-inkl.com> |
-| Web-Root | typisch `/www/htdocs/<kundennummer>/<verzeichnis>/` |
+| Steuerpanel | KAS, <https://kas.all-inkl.com> |
+| Upload | FTP über den subdomain-eigenen Nutzer `f0184137` |
 
-**Wichtig:** `nginx-praybuddy.conf` lässt sich hier **nicht** einsetzen — dafür
-fehlt der Root-Zugriff. Die Datei bleibt nur für den Fall im Repo, dass die
-Seite einmal auf einen eigenen Server umzieht. Auf ALL-INKL ist
-`htaccess-praybuddy` der richtige Weg.
+Der FTP-Nutzer ist **chrooted** auf `/praybuddy.likafilm.com/`. Den FTP-Nutzer
+einer anderen Subdomain zu verwenden, legt die Dateien in deren Chroot ab, wo
+nginx sie nie findet. Hintergrund und Diagnose-Test:
+`~/.claude/memory/reference_allinkl_ftp_chroot_pitfall.md`.
 
 ## Dieses Repo wird nicht automatisch ausgeliefert
 
-Die Datei `CNAME` im Repo-Root stammt aus einem GitHub-Pages-Setup, das nie
-aktiv wurde (Pages-IPs wären `185.199.108–111.153`). Sie hat auf ALL-INKL
-keine Wirkung. Alle Änderungen müssen manuell hochgeladen werden.
+Alle Änderungen müssen hochgeladen werden. Der zweite Quellordner
+`~/praybuddy-website/` hält denselben Stand und enthält zusätzlich
+`tools/.env-deploy` mit den FTP-Zugangsdaten (nicht im Repo).
 
 Hochzuladen sind:
 
@@ -34,61 +34,79 @@ sitemap.xml
 icon.png
 og-image.png
 badge-app-store.svg
+fonts/*.woff2
+fonts/LICENSE.txt
+404.html
+404.php
+google3f2d86b09d73d64e.html
+.htaccess
 ```
 
-## Schritt 1 — Dateien hochladen
-
-**Per SSH/rsync** (ALL-INKL bietet SSH bei den meisten Tarifen):
+## Schritt 1: Dateien hochladen
 
 ```bash
-export DEPLOY_USER=DEIN_SSH_USER
-export DEPLOY_HOST=praybuddy.likafilm.com
-export DEPLOY_PATH=/www/htdocs/KUNDENNUMMER/praybuddy   # echten Pfad im KAS nachsehen
-
 ./deploy/upload.sh          # Trockenlauf
 ./deploy/upload.sh --live   # überträgt wirklich
 ```
 
-**Oder per FTP / KAS-Dateimanager:** dieselben Dateien, Verzeichnisstruktur
+Das Skript nutzt `lftp` mit gezieltem `put`, **nicht** `mirror --delete`. Ein
+Mirror aus diesem Ordner würde serverseitige Dateien löschen, die hier nicht
+liegen. Zugangsdaten liest es aus `~/praybuddy-website/tools/.env-deploy`.
+
+Alternativ derselbe Satz Dateien per KAS-Dateimanager, Verzeichnisstruktur
 beibehalten (`de/index.html` muss im Unterordner `de/` landen).
 
-## Schritt 2 — Weiterleitungen einrichten
+## Schritt 2: .htaccess
 
-Der Upload allein behebt die Duplikat-URLs **nicht**. Zwei Wege, beide gehen:
+`deploy/htaccess-praybuddy` ist die Vorlage, `/.htaccess` im Repo-Root ist die
+Kopie, die tatsächlich hochgeladen wird. Beide müssen übereinstimmen,
+`verify.sh` prüft das.
 
-### Variante A — `.htaccess` (empfohlen, alles an einer Stelle)
+Sie deckt vier Dinge ab, und die **Reihenfolge ist bindend**:
 
-`deploy/htaccess-praybuddy` als `.htaccess` ins Web-Root der Subdomain legen.
-Deckt `http://` → `https://`, `www.` → ohne `www` und `/index.html` → `/` ab.
+1. `http://` auf `https://`
+2. `www.` auf ohne `www`
+3. `/index.html` auf `/`
+4. Catch-all auf `/404.php`, damit fehlende URLs 404 statt 500 liefern
 
-### Variante B — KAS-Oberfläche
+Punkt 4 stammt vom 29.07.2026 und gilt für alle likafilm-Subdomains:
+`ErrorDocument 404` wird dort ignoriert, ohne die Rewrite-Regel antwortet der
+Server auf jede unbekannte URL mit HTTP 500. Steht der Catch-all vor den
+Redirects, greifen die Redirects nie.
 
-Im KAS lassen sich HTTPS-Erzwingung und Weiterleitungen auch klicken:
+Dazu kommen Sicherheits-Header und eine Content-Security-Policy. Die CSP ist
+eng gefasst (`default-src 'self'`), was nur funktioniert, weil die Seite keine
+fremde Ressource mehr lädt. Wer eine externe Einbindung ergänzt, muss die CSP
+mitziehen, sonst blockt der Browser sie stillschweigend.
 
-- *Domain → Bearbeiten → SSL-Schutz* — HTTPS erzwingen, optional HSTS
-- *Domain → Bearbeiten → Weiterleitung* — für die `www.`-Variante
+Im KAS ließen sich HTTPS-Erzwingung und die `www.`-Weiterleitung auch klicken.
+Für `/index.html` auf `/` und für Punkt 4 gibt es dort nichts, deshalb liegt
+alles in der `.htaccess`.
 
-Variante B erspart die `.htaccess`-Regeln 1 und 2. Die Regel für
-`/index.html` → `/` gibt es im KAS nicht, die braucht in jedem Fall
-`.htaccess`.
-
-## Schritt 3 — Kontrolle
+## Schritt 3: Kontrolle
 
 ```bash
 ./deploy/verify.sh
 ```
 
-Prüft sieben Punkte gegen den Live-Server und liefert Exit-Code 1, solange
-etwas offen ist. Vor dem Deploy ausführen (zeigt den Ausgangszustand), danach
-erneut — dann muss alles grün sein.
+Prüft den Live-Server und liefert Exit-Code 1, solange etwas offen ist. Vor dem
+Deploy ausführen (zeigt den Ausgangszustand), danach erneut.
 
-## Schritt 4 — Search Console
+## Schritt 4: Search Console
 
-1. Sitemap neu einreichen: `https://praybuddy.likafilm.com/sitemap.xml`
-   (enthält jetzt zusätzlich `/de/`)
+1. Sitemap einreichen: `https://praybuddy.likafilm.com/sitemap.xml`
 2. `https://praybuddy.likafilm.com/de/` über die URL-Prüfung indexieren lassen
 
-Die Meldung *„Alternative Seite mit richtigem kanonischen Tag"* ist an sich
-**keine Fehlfunktion** — sie bedeutet, dass Google die Duplikate erkannt und
-korrekt auf die kanonische URL zusammengeführt hat. Die Weiterleitungen räumen
-die Ursache trotzdem auf.
+Beides beschleunigt nur. `robots.txt` verweist bereits auf die Sitemap, Google
+findet sie also ohnehin.
+
+Die Meldung "Alternative Seite mit richtigem kanonischen Tag" ist an sich
+**keine Fehlfunktion**, sie bedeutet, dass Google die Duplikate erkannt und
+korrekt zusammengeführt hat. Die Weiterleitungen räumen die Ursache trotzdem
+auf.
+
+## Was der Seite noch fehlt
+
+Auf `likafilm.com` verlinkt keine Seite auf diese Subdomain. Ohne eingehenden
+Link bleibt sie für Google schwach angebunden. Das ist der billigste wirksame
+Hebel und braucht einen WordPress-Login.
