@@ -47,13 +47,24 @@ echo
 echo "Deutsche Sprachversion:"
 expect_status "$BASE/de/" 200 "/de/ erreichbar"
 
-if curl -sS --max-time 20 "$BASE/de/" 2>/dev/null | grep -q 'hreflang="de"'; then
+# ACHTUNG, hier lag ein Fehler im Pruefskript selbst (08.08.2026):
+# "curl ... | grep -q" ist unter "set -o pipefail" ein Zufallsgenerator.
+# Findet grep den Treffer frueh, beendet es sich und schliesst die Pipe, curl
+# stirbt an SIGPIPE, und pipefail macht daraus einen Fehlschlag der ganzen
+# Pipeline, obwohl der Treffer da war. Ergebnis: dieselbe unveraenderte Seite
+# meldete mal OK, mal OFFEN. Deshalb erst holen, dann pruefen, nie durch eine
+# Pipe mit frueh aussteigendem Leser.
+hole() { curl -sS --max-time 20 "$1" 2>/dev/null; }
+
+de_html=$(hole "$BASE/de/")
+if [[ "$de_html" == *'hreflang="de"'* ]]; then
     green "/de/ enthält hreflang"
 else
     red "/de/ enthält kein hreflang (alte Datei auf dem Server?)"
 fi
 
-if curl -sS --max-time 20 "$BASE/sitemap.xml" 2>/dev/null | grep -q '/de/'; then
+sitemap=$(hole "$BASE/sitemap.xml")
+if [[ "$sitemap" == */de/* ]]; then
     green "sitemap.xml enthält /de/"
 else
     red "sitemap.xml ohne /de/ (alte Datei auf dem Server?)"
@@ -83,11 +94,11 @@ echo "Datenschutz und Auslieferung:"
 # 08.08.2026 die IP jedes Besuchers an Google uebertragen.
 extern=0
 for p in "/" "/de/"; do
-    if curl -sS --max-time 20 "$BASE$p" 2>/dev/null |
-        grep -oE '(src|href)="https?://[^"]+"' |
-        grep -vE 'praybuddy\.likafilm\.com|apps\.apple\.com|github\.com|//likafilm\.com' |
-        grep -q .; then
-        red "$p laedt eine fremde Ressource nach"
+    html=$(hole "$BASE$p")
+    fremd=$(grep -oE '(src|href)="https?://[^"]+"' <<<"$html" |
+            grep -vE 'praybuddy\.likafilm\.com|apps\.apple\.com|github\.com|//likafilm\.com' || true)
+    if [[ -n "$fremd" ]]; then
+        red "$p laedt eine fremde Ressource nach: $(head -1 <<<"$fremd")"
         extern=1
     fi
 done
@@ -96,7 +107,8 @@ done
 expect_status "$BASE/fonts/inter-latin.woff2" 200 "Schriften liegen lokal"
 
 for p in "/" "/de/"; do
-    if curl -sS --max-time 20 "$BASE$p" 2>/dev/null | grep -q 'Oberföhringer Str. 246a'; then
+    html=$(hole "$BASE$p")
+    if [[ "$html" == *'Oberföhringer Str. 246a'* ]]; then
         green "$p nennt die ladungsfaehige Anschrift"
     else
         red "$p ohne Anschrift (§ 5 DDG)"
